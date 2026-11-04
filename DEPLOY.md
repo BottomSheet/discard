@@ -55,3 +55,9 @@ npm run preview
 - URL внутренних страниц будут вида `https://bottomsheet.github.io/discard/#/vopros/1` — это предотвращает ошибку 404 при обновлении страницы.
 - При каждом новом `git push` в `main` или `master` GitHub Actions автоматически собирает и обновляет сайт.
 - Если нужна своя доменная зона, поменяй `base` и настрой домен GitHub Pages отдельно.
+
+## Обновление с версии 1.7
+
+В папке локального клона `discard` можно применить патч версии 1.8: `git apply ~/Downloads/eva-18-quest-v1.8.patch`, после чего `npm install`, `npm run build`, `git add .`, `git commit -m "Add birthday countdown and code"`, `git push origin main`. Тексты вопросов патч не затрагивает.
+
+**Важно:** браузерный код — только игровое ограничение. Исходные тексты публичного сайта остаются доступны в JavaScript.

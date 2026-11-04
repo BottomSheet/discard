@@ -10,6 +10,7 @@ const route = useRoute()
 // Один экземпляр QuestionView для всех номеров: меняется только содержимое,
 // не размонтируется стеклянная карточка и не сбрасываются её анимации.
 const sceneKey = computed(() => route.name === 'question' ? 'question-screen' : route.fullPath)
+const isPrelude = computed(() => route.name === 'unlock' || route.name === 'countdown')
 </script>
 
 <template>
@@ -19,7 +20,7 @@ const sceneKey = computed(() => route.name === 'question' ? 'question-screen' : 
       <span class="ambient-layer__mesh ambient-layer__mesh--two"></span>
       <span class="ambient-layer__mesh ambient-layer__mesh--three"></span>
     </div>
-    <AppHeader />
+    <AppHeader v-if="!isPrelude" />
     <main id="main-content" class="main-area">
       <RouterView v-slot="{ Component }">
         <Transition name="scene" mode="out-in">
@@ -27,6 +28,6 @@ const sceneKey = computed(() => route.name === 'question' ? 'question-screen' : 
         </Transition>
       </RouterView>
     </main>
-    <SiteFooter />
+    <SiteFooter v-if="!isPrelude" />
   </div>
 </template>
