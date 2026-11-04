@@ -5,7 +5,8 @@ html {
   scroll-padding-top: 24px;
   /* Safari может продолжать фон html под своей нижней панелью.
      Поэтому у корня тот же градиент, а не отдельный розовый цвет. */
-  background: var(--page-canvas);
+  background-color: var(--canvas-edge);
+  background-image: var(--page-canvas);
   background-attachment: fixed;
 }
 body {
@@ -71,6 +72,17 @@ input { accent-color: var(--rose); }
   pointer-events: none;
   isolation: isolate;
   background: var(--page-canvas);
+}
+.ambient-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Нижний край растворяется в светлом фоне вместо отдельной плашки. */
+  background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,.08) 62%, rgba(255,255,255,.58) 85%, rgba(255,253,253,.94) 100%);
+}
+:root[data-theme='dark'] .ambient-layer::after {
+  background: linear-gradient(to bottom, transparent 52%, rgba(37,29,43,.13) 72%, rgba(37,29,43,.76) 100%);
 }
 .ambient-layer__mesh {
   position: absolute;
@@ -177,3 +189,6 @@ input { accent-color: var(--rose); }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 :root[data-motion='reduced'] *, :root[data-motion='reduced'] *::before, :root[data-motion='reduced'] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+
+/* В iOS Safari нижняя плавающая панель использует оттенки у края документа.
+   Цвет у нижнего края — близкий к белому, без фиксированной подложки под UI браузера. */

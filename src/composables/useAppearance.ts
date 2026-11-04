@@ -17,7 +17,7 @@ export function useAppearance(): void {
     root.style.colorScheme = dark ? 'dark' : 'light'
     // Fallback для тех браузеров, которые учитывают theme-color.
     // Корневой фон задаётся градиентом в CSS: сплошную подложку не создаём.
-    const themeColor = dark ? '#251d2b' : '#fffafc'
+    const themeColor = dark ? '#251d2b' : '#fffdfd'
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', themeColor)
   }
 

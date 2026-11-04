@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#fffafc" />
+    <meta name="theme-color" content="#fffdfd" />
     <meta name="description" content="Для Евочки — восемнадцать вопросов о наших маленьких и важных моментах." />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,7 +16,7 @@
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const dark = data.theme === 'dark' || (data.theme === 'system' && systemDark);
         document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#251d2b' : '#fffafc');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#251d2b' : '#fffdfd');
       } catch { /* Настройки не обязательны для работы сайта. */ }
     </script>
   </head>

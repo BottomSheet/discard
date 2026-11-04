@@ -17,10 +17,12 @@
   --glass-blur: 24px;
 
   --background: #fffafc;
+  --canvas-edge: #fffdfd;
   /* Фон документа продолжается до границ, видимых Safari.
      Не отдельная однотонная зона под его адресной строкой. */
-  --page-canvas: linear-gradient(132deg,
-    #fffdfd 0%, #fff8fc 27%, #fff1f7 53%, #fffafd 76%, #fffdfd 100%);
+  --page-canvas:
+    linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,.38) 76%, #fffdfd 100%),
+    linear-gradient(132deg, #fffdfd 0%, #fff8fc 27%, #fff0f7 53%, #fffafd 76%, #fffdfd 100%);
   --ink: #382833;
   --ink-secondary: #67545f;
   --ink-quiet: #826f79;
@@ -49,6 +51,7 @@
 
 :root[data-theme='dark'] {
   --background: #241b22;
+  --canvas-edge: #251d2b;
   --page-canvas: linear-gradient(135deg,
     #251d2b 0%, #34273b 29%, #402c43 56%, #2c2035 77%, #251d2b 100%);
   --ink: #fcf2f7;

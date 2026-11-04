@@ -16,17 +16,19 @@ const number = computed(() => Number(route.params.number))
 useFocusHeading(() => `question-title-${number.value}`)
 const current = computed(() => getQuestion(number.value))
 const pending = ref(false)
+const selectedChoice = ref<ChoiceId | null>(null)
 const direction = ref<'forward' | 'backward'>('forward')
 const transitionName = computed(() => direction.value === 'backward' ? 'question-backward' : 'question-forward')
 let transitionTimer: ReturnType<typeof setTimeout> | undefined
 
 function selectAnswer(choice: ChoiceId): void {
   if (!current.value || pending.value) return
+  // Явный отклик на нажатие, без оценки правильности выбора.
+  // Оставляем карточку на экране до завершения короткой анимации.
   pending.value = true
+  selectedChoice.value = choice
   quest.choose(current.value.id, choice)
 
-  // Без отдельной паузы «загрузка вопроса»: новая карточка начинает движение
-  // сразу после фиксации выбора. Состояние и прогресс остаются на том же экране.
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const reducedBySetting = document.documentElement.dataset.motion === 'reduced'
   transitionTimer = setTimeout(() => {
@@ -34,12 +36,13 @@ function selectAnswer(choice: ChoiceId): void {
     void router.push(nextNumber > questions.length
       ? { name: 'birthday' }
       : { name: 'question', params: { number: nextNumber } })
-  }, prefersReduced || reducedBySetting ? 0 : 95)
+  }, prefersReduced || reducedBySetting ? 110 : 470)
 }
 
 watch(number, (next, previous) => {
   direction.value = next < previous ? 'backward' : 'forward'
   pending.value = false
+  selectedChoice.value = null
   // Роутер не прокручивает между вопросами сам, чтобы не было резкого скачка.
   // Прокрутка выполняется лишь когда заголовок уже вне видимой области.
   if (window.scrollY > 110) {
@@ -68,6 +71,7 @@ onBeforeUnmount(() => { if (transitionTimer) clearTimeout(transitionTimer) })
                 :key="option.id"
                 :choice="option"
                 :disabled="pending"
+                :selected="selectedChoice === option.id"
                 @select="selectAnswer"
               />
             </div>
