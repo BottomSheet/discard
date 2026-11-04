@@ -12,8 +12,8 @@ import type { ChoiceId } from '@/types/quest'
 const route = useRoute()
 const router = useRouter()
 const quest = useQuestStore()
-const heading = useFocusHeading()
 const number = computed(() => Number(route.params.number))
+useFocusHeading(() => `question-title-${number.value}`)
 const current = computed(() => getQuestion(number.value))
 const pending = ref(false)
 const direction = ref<'forward' | 'backward'>('forward')
@@ -53,14 +53,14 @@ onBeforeUnmount(() => { if (transitionTimer) clearTimeout(transitionTimer) })
 </script>
 
 <template>
-  <section v-if="current" ref="heading" tabindex="-1" class="question-page site-container" :aria-labelledby="`question-title-${number}`">
+  <section v-if="current" class="question-page site-container" :aria-labelledby="`question-title-${number}`">
     <div class="question-content glass-panel glass-panel--elevated">
       <QuestProgress :number="number" />
       <div class="question-viewport">
         <Transition :name="transitionName">
           <div :key="current.id" class="question-slide">
             <div class="question-topline">ВОПРОС {{ String(number).padStart(2, '0') }}</div>
-            <h1 :id="`question-title-${current.id}`" class="question-title">{{ current.title }}</h1>
+            <h1 :id="`question-title-${current.id}`" tabindex="-1" class="question-title">{{ current.title }}</h1>
             <p class="question-instruction">Выбери то, что помнишь. Дальше перейдём автоматически.</p>
             <div class="choices-list" role="group" :aria-label="`Варианты ответа на вопрос ${number}`">
               <ChoiceOption

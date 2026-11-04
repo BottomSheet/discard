@@ -2,13 +2,13 @@
 import { useFocusHeading } from '@/composables/useFocusHeading'
 import SlideAction from '@/components/ui/SlideAction.vue'
 
-const heading = useFocusHeading()
+useFocusHeading('birthday-title')
 </script>
 
 <template>
   <section class="birthday-page site-container" aria-labelledby="birthday-title">
     <div class="birthday-eyebrow">05 / 11 / 2026</div>
-    <h1 id="birthday-title" ref="heading" tabindex="-1" class="birthday-title">С днём рождения,<br /><em>Евочка.</em></h1>
+    <h1 id="birthday-title" tabindex="-1" class="birthday-title">С днём рождения,<br /><em>Евочка.</em></h1>
     <div class="birthday-age">18 лет ♡</div>
 
     <div class="birthday-letter glass-panel">

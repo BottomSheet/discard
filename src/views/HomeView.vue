@@ -6,7 +6,7 @@ import { useFocusHeading } from '@/composables/useFocusHeading'
 import SlideAction from '@/components/ui/SlideAction.vue'
 
 const quest = useQuestStore()
-const heading = useFocusHeading()
+useFocusHeading('home-title')
 const target = computed(() => ({
   name: 'question',
   params: { number: quest.isComplete ? 1 : quest.firstUnanswered }
@@ -24,7 +24,7 @@ function startQuest(): void {
   <section class="home-page site-container" aria-labelledby="home-title">
     <div class="home-intro">
       <span class="section-label">5 ноября · тебе 18</span>
-      <h1 id="home-title" ref="heading" tabindex="-1" class="home-title">С днём<br />рождения,<br /><em>Евочка.</em></h1>
+      <h1 id="home-title" tabindex="-1" class="home-title">С днём<br />рождения,<br /><em>Евочка.</em></h1>
       <div class="home-copy">
         <p>Я собрал для тебя кое-что из нашей переписки: первые признания, странные шутки и слова, которые стали только нашими.</p>
         <p>Здесь 18 вопросов. Просто выбирай, как помнишь. В конце покажу, что было на самом деле.</p>

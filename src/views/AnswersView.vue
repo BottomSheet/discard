@@ -9,7 +9,7 @@ import AppIcon from '@/components/ui/AppIcon.vue'
 
 const router = useRouter()
 const quest = useQuestStore()
-const heading = useFocusHeading()
+useFocusHeading('answers-title')
 const activeChapter = ref('all')
 const visibleQuestions = computed(() => {
   const current = chapters.find(({ id }) => id === activeChapter.value)
@@ -27,7 +27,7 @@ function startOver(): void {
   <section class="answers-page site-container" aria-labelledby="answers-title">
     <div class="answers-intro">
       <span class="section-label"><span class="section-label__line"></span> Вспомнить всё</span>
-      <h1 id="answers-title" ref="heading" tabindex="-1">А вот как<br /><em>было на самом деле.</em></h1>
+      <h1 id="answers-title" tabindex="-1">А вот как<br /><em>было на самом деле.</em></h1>
       <p>Здесь — твой выбор и то, что мы действительно писали друг другу. Можно перечитать сообщения и ещё раз вспомнить эти моменты.</p>
     </div>
     <div class="answers-toolbar" aria-label="Фильтр глав">

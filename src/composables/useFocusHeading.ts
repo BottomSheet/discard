@@ -1,17 +1,20 @@
-import { nextTick, onMounted, ref, watch, type Ref } from 'vue'
+import { nextTick, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-/** После смены сцены переводит фокус на заголовок для клавиатуры и скринридера. */
-export function useFocusHeading(): Ref<HTMLElement | null> {
-  const heading = ref<HTMLElement | null>(null)
+/**
+ * Переводит фокус на заголовок после входа на экран или смены вопроса.
+ * ID позволяет не привязывать template ref к каждому заголовку.
+ */
+export function useFocusHeading(targetId: string | (() => string)): void {
   const route = useRoute()
 
-  const focus = () => {
-    void nextTick(() => heading.value?.focus({ preventScroll: true }))
+  const focus = (): void => {
+    void nextTick(() => {
+      const id = typeof targetId === 'function' ? targetId() : targetId
+      document.getElementById(id)?.focus({ preventScroll: true })
+    })
   }
 
   onMounted(focus)
   watch(() => route.fullPath, focus)
-
-  return heading
 }
