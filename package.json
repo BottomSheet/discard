@@ -1,7 +1,7 @@
 {
   "name": "eva-18-quest",
   "private": true,
-  "version": "1.5.0",
+  "version": "1.6.0",
   "type": "module",
   "description": "Небольшой личный квест ко дню рождения Евы",
   "scripts": {

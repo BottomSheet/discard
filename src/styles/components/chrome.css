@@ -90,8 +90,12 @@
   font-weight: 600;
 }
 .secondary-button:hover { background: rgba(255,255,255,.78); }
-/* Одна дорожка для подписи, заливки и ползунка; 3px — симметричный inset. */
+/* Слайдер с центральной подписью. Симметричные поля гарантируют, что
+   геометрический центр текста совпадает с центром трека, а пилюля не заезжает
+   на текст даже на iPhone шириной 320px. */
 .slide-action {
+  --slide-thumb-width: 76px;
+  --slide-inset: 3px;
   display: block;
   position: relative;
   appearance: none;
@@ -100,28 +104,27 @@
   min-height: 74px;
   padding: 0;
   border-radius: var(--radius-pill);
-  text-align: left;
   overflow: hidden;
   isolation: isolate;
+  background-color: rgba(var(--glass-rgb), .44);
   cursor: default;
   user-select: none;
   -webkit-user-select: none;
   touch-action: pan-y;
 }
 .slide-action__track {
-  display: block;
   position: relative;
+  display: block;
   width: 100%;
   height: 100%;
-  min-width: 0;
   border-radius: inherit;
   overflow: hidden;
 }
-/* Текст центрируется в зоне справа от ползунка, не под ним. */
 .slide-action__content {
   position: absolute;
-  z-index: 1;
-  inset: 0 16px 0 100px;
+  z-index: 2;
+  inset: 0;
+  padding-inline: calc(var(--slide-thumb-width) + var(--slide-inset) + 7px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -130,29 +133,27 @@
   color: var(--ink);
   text-align: center;
   pointer-events: none;
-  transition: opacity 140ms ease;
 }
 .slide-action__content strong {
   display: block;
   max-width: 100%;
   font-size: 15px;
-  line-height: 1.13;
+  line-height: 1.12;
   font-weight: 800;
   letter-spacing: -.012em;
+  overflow-wrap: normal;
   text-wrap: balance;
 }
 .slide-action__content small {
   display: block;
   color: var(--ink-secondary);
-  font-size: 12px;
-  line-height: 1.15;
+  font-size: 11px;
+  line-height: 1.14;
   font-weight: 600;
 }
-/* Сначала width=0 И opacity=0. При жесте цвет идёт под ползунком
-   до его ПРАВОГО края, а не отстаёт от пальца. */
 .slide-action__fill {
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   top: 0;
   left: 0;
   bottom: 0;
@@ -160,19 +161,19 @@
   opacity: 0;
   max-width: 100%;
   border-radius: var(--radius-pill);
-  background: linear-gradient(100deg, #f2b4d0, #d879a8);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.52);
+  background: linear-gradient(100deg, #f7cae0 0%, #e9a2c5 48%, #db8db5 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.46);
   transition: width 300ms var(--ease-silk), opacity 150ms ease;
   pointer-events: none;
 }
 .slide-action__thumb {
   position: absolute;
   top: 50%;
-  left: 3px;
+  left: var(--slide-inset);
   z-index: 3;
   display: grid;
   place-items: center;
-  width: 80px;
+  width: var(--slide-thumb-width);
   height: 56px;
   border-radius: var(--radius-pill);
   border: 1px solid rgba(255,255,255,.9);
@@ -195,11 +196,14 @@
 .slide-action--completed .slide-action__fill { transition-duration: 190ms; }
 .slide-action:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 4px; }
 :root[data-theme='dark'] .slide-action__thumb { background: linear-gradient(165deg, #fff, #f9e9f2); color: #9e4d76; }
-:root[data-theme='dark'] .slide-action__fill { background: linear-gradient(105deg, #ae5b88, #d98aaf); }
+:root[data-theme='dark'] .slide-action__fill { background: linear-gradient(105deg, #8f496f, #c481a6); }
+@media (max-width: 700px) {
+  .slide-action { --slide-thumb-width: 62px; min-height: 70px; height: 70px; }
+}
 @media (max-width: 360px) {
-  .slide-action__content { left: 95px; right: 12px; }
+  .slide-action { --slide-thumb-width: 58px; }
   .slide-action__content strong { font-size: 14px; }
-  .slide-action__content small { font-size: 11px; }
+  .slide-action__content small { font-size: 10px; }
 }
 .settings-dialog { position: fixed; width: min(440px, calc(100vw - 32px)); max-height: min(90dvh, 660px); overflow: auto; padding: 0; border: 1px solid var(--glass-stroke); border-radius: 26px; background: rgba(var(--glass-rgb), .78); color: var(--ink); box-shadow: 0 24px 80px rgba(47, 17, 34, .19); -webkit-backdrop-filter: blur(22px) saturate(1.15); backdrop-filter: blur(22px) saturate(1.15); }
 .settings-dialog::backdrop { background: rgba(29, 24, 27, .28); backdrop-filter: blur(4px); }

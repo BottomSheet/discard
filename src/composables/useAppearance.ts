@@ -15,6 +15,10 @@ export function useAppearance(): void {
     root.style.setProperty('--glass-alpha', String(0.36 + (settings.glass / 100) * 0.58))
     root.style.setProperty('--glass-blur', `${Math.round(9 + (settings.glass / 100) * 18)}px`)
     root.style.colorScheme = dark ? 'dark' : 'light'
+    // Fallback для тех браузеров, которые учитывают theme-color.
+    // Корневой фон задаётся градиентом в CSS: сплошную подложку не создаём.
+    const themeColor = dark ? '#251d2b' : '#fffafc'
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', themeColor)
   }
 
   watchEffect(apply)

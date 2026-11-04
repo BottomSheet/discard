@@ -1,9 +1,18 @@
 *, *::before, *::after { box-sizing: border-box; }
-html { min-width: 320px; scroll-padding-top: 24px; }
+html {
+  min-width: 320px;
+  min-height: 100%;
+  scroll-padding-top: 24px;
+  /* Safari может продолжать фон html под своей нижней панелью.
+     Поэтому у корня тот же градиент, а не отдельный розовый цвет. */
+  background: var(--page-canvas);
+  background-attachment: fixed;
+}
 body {
   min-width: 320px;
   margin: 0;
-  background: var(--background);
+  min-height: 100%;
+  background: transparent;
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: 15px;
@@ -24,6 +33,25 @@ input { accent-color: var(--rose); }
 [tabindex='-1']:focus { outline: 0; }
 .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .site-container { width: min(calc(100% - 2 * var(--gutter)), var(--page-width)); margin-inline: auto; }
+/* В iOS 26 Safari иногда превращает плавающую нижнюю панель в непрозрачную
+   полосу после обнаружения фоновых элементов у края. Невидимый sticky-маркер
+   помогает браузеру сохранять прозрачный режим. Вне мобильного WebKit скрыт. */
+.safari-toolbar-transparent-hint { display: none; }
+@supports (-webkit-touch-callout: none) {
+  @media (pointer: coarse) {
+    .safari-toolbar-transparent-hint {
+      display: block;
+      position: sticky;
+      bottom: -2px;
+      z-index: 999;
+      width: 100%;
+      height: 6px;
+      background: transparent;
+      pointer-events: none;
+    }
+  }
+}
+
 .app-shell {
   position: relative;
   isolation: isolate;
@@ -32,9 +60,9 @@ input { accent-color: var(--rose); }
   min-height: 100svh;
   overflow: clip;
 }
-/* Живой градиент без отдельных круглых пятен. Три полноэкранные цветовые
-   плоскости с разными траекториями; анимируется только transform/opacity.
-   Это заметно и в светлой, и в тёмной теме и не зависит от скролла. */
+/* Живой фон: светлая основа с большим количеством белого и три
+   широкие цветовые плоскости. Движение идёт GPU-трансформациями, а не
+   покадровой перерисовкой градиента. Слои покрывают весь viewport. */
 .ambient-layer {
   position: fixed;
   z-index: 0;
@@ -42,83 +70,79 @@ input { accent-color: var(--rose); }
   overflow: hidden;
   pointer-events: none;
   isolation: isolate;
-  background: linear-gradient(120deg, #ffedf6 0%, #fce0f0 28%, #f3e0f4 55%, #ffe5ed 82%, #fff3f8 100%);
-  transition: background-color 320ms ease;
+  background: var(--page-canvas);
 }
 .ambient-layer__mesh {
   position: absolute;
   display: block;
-  inset: -32%;
+  inset: -34%;
   pointer-events: none;
   transform-origin: center;
   will-change: transform, opacity;
 }
 .ambient-layer__mesh--one {
-  background:
-    linear-gradient(113deg,
-      transparent 0%, rgba(255, 245, 249, .46) 16%, rgba(235, 146, 197, .54) 35%,
-      rgba(244, 200, 236, .22) 54%, rgba(255, 233, 244, .1) 72%, rgba(245, 158, 198, .44) 100%);
-  animation: mesh-flow-one 14s ease-in-out infinite alternate;
+  background: linear-gradient(114deg,
+    rgba(255,255,255,0) 0%, rgba(255,255,255,.72) 17%,
+    rgba(239,158,197,.58) 36%, rgba(255,250,253,.2) 55%,
+    rgba(240,178,218,.44) 77%, rgba(255,255,255,.48) 100%);
+  animation: mesh-flow-one 11s ease-in-out infinite alternate;
 }
 .ambient-layer__mesh--two {
-  background:
-    linear-gradient(28deg,
-      rgba(255, 227, 217, .5) 4%, rgba(255, 245, 251, .02) 26%,
-      rgba(216, 166, 221, .43) 49%, rgba(255, 224, 237, .12) 73%,
-      rgba(245, 160, 190, .42) 100%);
-  mix-blend-mode: multiply;
-  animation: mesh-flow-two 19s ease-in-out infinite alternate;
+  background: linear-gradient(26deg,
+    rgba(255,255,255,.8) 0%, rgba(255,233,243,.1) 18%,
+    rgba(247,195,221,.64) 39%, rgba(255,255,255,.84) 56%,
+    rgba(233,186,227,.40) 78%, rgba(255,255,255,.16) 100%);
+  opacity: .86;
+  animation: mesh-flow-two 14s ease-in-out infinite alternate;
 }
 .ambient-layer__mesh--three {
-  background:
-    linear-gradient(158deg,
-      rgba(255, 248, 251, .02) 3%, rgba(255, 181, 203, .4) 31%,
-      rgba(245, 198, 234, .04) 52%, rgba(218, 169, 230, .36) 71%,
-      rgba(255, 244, 249, .08) 100%);
-  opacity: .78;
-  animation: mesh-flow-three 23s ease-in-out infinite alternate;
+  background: linear-gradient(163deg,
+    rgba(255,255,255,.66) 0%, rgba(255,249,252,.06) 26%,
+    rgba(243,165,207,.43) 45%, rgba(255,255,255,.85) 64%,
+    rgba(243,190,222,.40) 85%, rgba(255,255,255,.4) 100%);
+  opacity: .80;
+  animation: mesh-flow-three 18s ease-in-out infinite alternate;
 }
 :root[data-theme='dark'] .ambient-layer {
-  background: linear-gradient(128deg, #231722 0%, #352039 27%, #29203d 57%, #3a2337 81%, #201824 100%);
+  background: var(--page-canvas);
 }
 :root[data-theme='dark'] .ambient-layer__mesh--one {
-  background: linear-gradient(113deg,
-    rgba(25, 20, 34, .13) 0%, rgba(119, 57, 102, .5) 25%,
-    rgba(183, 92, 148, .39) 42%, rgba(78, 49, 100, .14) 68%,
-    rgba(136, 63, 109, .52) 100%);
+  background: linear-gradient(118deg,
+    rgba(35,25,42,.1) 0%, rgba(137,78,119,.32) 25%,
+    rgba(190,100,146,.43) 44%, rgba(48,36,66,.16) 64%,
+    rgba(124,72,120,.36) 100%);
 }
 :root[data-theme='dark'] .ambient-layer__mesh--two {
-  background: linear-gradient(24deg,
-    rgba(133, 62, 91, .53) 0%, rgba(40, 29, 60, .11) 27%,
-    rgba(99, 68, 145, .54) 49%, rgba(38, 28, 52, .05) 72%,
-    rgba(175, 85, 129, .52) 100%);
-  mix-blend-mode: screen;
-  opacity: .68;
+  background: linear-gradient(27deg,
+    rgba(48,35,61,.52) 0%, rgba(72,46,93,.05) 24%,
+    rgba(155,91,153,.36) 48%, rgba(49,34,64,.12) 75%,
+    rgba(177,91,134,.36) 100%);
+  opacity: .8;
 }
 :root[data-theme='dark'] .ambient-layer__mesh--three {
-  background: linear-gradient(155deg,
-    rgba(26, 23, 40, .05) 3%, rgba(162, 79, 124, .46) 29%,
-    rgba(39, 32, 65, .03) 53%, rgba(101, 74, 135, .48) 74%,
-    rgba(33, 23, 46, .09) 100%);
-  opacity: .75;
+  background: linear-gradient(163deg,
+    rgba(28,20,37,.04) 0%, rgba(167,85,130,.38) 31%,
+    rgba(46,31,63,.04) 53%, rgba(113,83,153,.32) 79%,
+    rgba(43,29,53,.1) 100%);
+  opacity: .85;
 }
 @keyframes mesh-flow-one {
-  0%   { transform: translate3d(-11%, -8%, 0) rotate(-7deg) scale(1); opacity: .67; }
-  50%  { transform: translate3d(7%, 5%, 0) rotate(5deg) scale(1.1); opacity: 1; }
-  100% { transform: translate3d(-3%, 10%, 0) rotate(-3deg) scale(1.06); opacity: .82; }
+  0%   { transform: translate3d(-13%, -9%, 0) rotate(-9deg) scale(1.04); opacity: .6; }
+  40%  { transform: translate3d(11%, 6%, 0) rotate(6deg) scale(1.1); opacity: 1; }
+  100% { transform: translate3d(-6%, 13%, 0) rotate(-4deg) scale(1.06); opacity: .7; }
 }
 @keyframes mesh-flow-two {
-  0%   { transform: translate3d(12%, -9%, 0) rotate(7deg) scale(1.08); opacity: .67; }
-  55%  { transform: translate3d(-9%, 7%, 0) rotate(-6deg) scale(.98); opacity: .96; }
-  100% { transform: translate3d(4%, -3%, 0) rotate(4deg) scale(1.12); opacity: .8; }
+  0%   { transform: translate3d(11%, -10%, 0) rotate(8deg) scale(1.05); opacity: .56; }
+  52%  { transform: translate3d(-13%, 12%, 0) rotate(-8deg) scale(1.13); opacity: .98; }
+  100% { transform: translate3d(7%, -6%, 0) rotate(4deg) scale(1.03); opacity: .7; }
 }
 @keyframes mesh-flow-three {
-  0%   { transform: translate3d(-4%, 10%, 0) rotate(-5deg) scale(1.04); opacity: .6; }
-  48%  { transform: translate3d(8%, -11%, 0) rotate(7deg) scale(.98); opacity: .96; }
-  100% { transform: translate3d(-10%, 2%, 0) rotate(-1deg) scale(1.11); opacity: .76; }
+  0%   { transform: translate3d(-7%, 14%, 0) rotate(-7deg) scale(1.08); opacity: .48; }
+  58%  { transform: translate3d(13%, -13%, 0) rotate(9deg) scale(1.02); opacity: .94; }
+  100% { transform: translate3d(-12%, 5%, 0) rotate(-2deg) scale(1.12); opacity: .64; }
 }
 @media (max-width: 700px) {
-  .ambient-layer__mesh { inset: -34%; }
+  .ambient-layer__mesh { inset: -38%; }
 }
 .main-area {
   position: relative;

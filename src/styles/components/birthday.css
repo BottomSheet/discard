@@ -20,3 +20,38 @@
   .birthday-end { margin-top: 28px; }
   .birthday-end .slide-action { width: 100%; }
 }
+
+/* Короткий салют из двух краёв экрана. Только transform и opacity.
+   Не затрагивает прокрутку, доступность и тач-зоны. */
+.birthday-confetti {
+  position: fixed;
+  z-index: 8;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint style;
+}
+.birthday-confetti__piece {
+  position: absolute;
+  top: var(--start-y);
+  left: -10px;
+  width: var(--size);
+  height: calc(var(--size) * 1.6);
+  border-radius: 2px;
+  background: var(--color);
+  opacity: 0;
+  box-shadow: 0 0 2px rgba(255,255,255,.25);
+  animation: birthday-confetti-fly var(--duration) cubic-bezier(.18,.4,.28,1) var(--delay) both;
+  will-change: transform, opacity;
+}
+.birthday-confetti__piece--right { left: auto; right: -10px; }
+.birthday-confetti__piece--round { border-radius: 50%; height: var(--size); }
+@keyframes birthday-confetti-fly {
+  0% { transform: translate3d(0, 0, 0) rotate(0); opacity: 0; }
+  8% { opacity: .96; }
+  37% { transform: translate3d(var(--mid-x), var(--mid-y), 0) rotate(var(--mid-turn)); opacity: .96; }
+  78% { opacity: .9; }
+  100% { transform: translate3d(var(--end-x), var(--end-y), 0) rotate(var(--turn)); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .birthday-confetti { display: none; } }
+:root[data-motion='reduced'] .birthday-confetti { display: none; }

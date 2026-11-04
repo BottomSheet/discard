@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { useFocusHeading } from '@/composables/useFocusHeading'
 import SlideAction from '@/components/ui/SlideAction.vue'
+import BirthdayConfetti from '@/components/ui/BirthdayConfetti.vue'
 
 useFocusHeading('birthday-title')
 </script>
 
 <template>
   <section class="birthday-page site-container" aria-labelledby="birthday-title">
+    <BirthdayConfetti />
     <div class="birthday-eyebrow">05 / 11 / 2026</div>
     <h1 id="birthday-title" tabindex="-1" class="birthday-title">С днём рождения,<br /><em>Евочка.</em></h1>
     <div class="birthday-age">18 лет ♡</div>
