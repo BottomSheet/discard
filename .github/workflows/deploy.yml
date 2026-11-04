@@ -1,0 +1,53 @@
+name: Публикация квеста на GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Собрать и опубликовать
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Получить исходники
+        uses: actions/checkout@v4
+
+      - name: Установить Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # У проекта пока нет package-lock.json, поэтому используется npm install.
+      # Когда lock-файл появится, этот шаг можно заменить на npm ci.
+      - name: Установить зависимости
+        run: npm install --no-audit --no-fund
+
+      - name: Проверить типы и собрать сайт
+        run: npm run build
+
+      - name: Настроить GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Загрузить готовый сайт
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Опубликовать
+        id: deployment
+        uses: actions/deploy-pages@v4
